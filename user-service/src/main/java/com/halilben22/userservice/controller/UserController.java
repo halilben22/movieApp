@@ -1,11 +1,14 @@
 package com.halilben22.userservice.controller;
 
+import com.halilben22.userservice.dto.Comment;
 import com.halilben22.userservice.dto.UserDto;
 import com.halilben22.userservice.model.User;
 import com.halilben22.userservice.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/users")
@@ -41,6 +44,14 @@ public class UserController {
     public ResponseEntity<User> findById(@PathVariable Long userId) {
         User user = userService.findUserById(userId);
         return ResponseEntity.ok(user);
+    }
+
+
+    @GetMapping("/getComments/{userId}")
+    public ResponseEntity<List<Comment>>getUserComments(@PathVariable Long userId) {
+
+        List<Comment> comments = userService.findUserComments(userId);
+        return ResponseEntity.ok(comments);
     }
 
 

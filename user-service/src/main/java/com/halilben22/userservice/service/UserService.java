@@ -1,9 +1,13 @@
 package com.halilben22.userservice.service;
 
+import com.halilben22.userservice.dto.Comment;
 import com.halilben22.userservice.dto.UserDto;
+import com.halilben22.userservice.feign.CommentFeignRepository;
 import com.halilben22.userservice.model.User;
 import com.halilben22.userservice.repository.UserRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -11,8 +15,11 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    private final CommentFeignRepository commentFeignRepository;
+
+    public UserService(UserRepository userRepository, CommentFeignRepository commentFeignRepository) {
         this.userRepository = userRepository;
+        this.commentFeignRepository = commentFeignRepository;
     }
 
 
@@ -62,5 +69,14 @@ public class UserService {
     public User findUserById(Long userId) {
 
         return userRepository.findById(userId).get();
+    }
+
+    public List<Comment> findUserComments(Long userId) {
+        List<Comment> comments=commentFeignRepository.getCommentByUserId(userId).getBody();
+
+        return comments;
+
+
+
     }
 }

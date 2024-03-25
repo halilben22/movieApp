@@ -10,6 +10,7 @@ import com.halilben22.commentservice.model.User;
 import com.halilben22.commentservice.repository.CommentRepository;
 import jakarta.ws.rs.NotFoundException;
 import org.springframework.stereotype.Service;
+import java.util.List;
 
 @Service
 public class CommentService {
@@ -55,6 +56,12 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId).get();
 
         commentRepository.delete(comment);
+
+    }
+
+    public List<Comment> findCommentByUserId(Long userId) {
+
+        return commentRepository.findAllCommentByUserId(userId);
 
     }
 }
