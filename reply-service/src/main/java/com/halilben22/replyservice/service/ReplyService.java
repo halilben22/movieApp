@@ -1,10 +1,14 @@
 package com.halilben22.replyservice.service;
 
 import com.halilben22.replyservice.dto.ReplyDto;
+import com.halilben22.replyservice.feign.ReplyCommentFeignClient;
+import com.halilben22.replyservice.model.Comment;
 import com.halilben22.replyservice.model.Reply;
 import com.halilben22.replyservice.repository.ReplyRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -13,13 +17,21 @@ public class ReplyService {
 
     private final ReplyRepository repository;
 
-    public ReplyService(ReplyRepository repository) {
+    private final ReplyCommentFeignClient replyCommentFeignClient;
+
+    public ReplyService(ReplyRepository repository, ReplyCommentFeignClient replyCommentFeignClient) {
         this.repository = repository;
+        this.replyCommentFeignClient = replyCommentFeignClient;
     }
 
 
     public Reply createReply(ReplyDto replyDto) {
 
+
+        Comment comment = replyCommentFeignClient.findById(replyDto.getCommentId()).getBody();
+        if (comment == null) {
+            return null;
+        }
         Reply reply = new Reply();
         reply.setCommentId(replyDto.getCommentId());
         reply.setReplyText(replyDto.getReplyText());
@@ -49,5 +61,14 @@ public class ReplyService {
 
         repository.deleteById(replyId);
 
+    }
+
+    public List<Reply> findRepliesByCommentId(Long commentId) {
+        Comment comment = replyCommentFeignClient.findById(commentId).getBody();
+        if (comment == null) {
+            return null;
+        }
+
+        return repository.findReplyByCommentId(commentId);
     }
 }

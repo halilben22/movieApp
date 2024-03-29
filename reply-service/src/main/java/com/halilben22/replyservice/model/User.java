@@ -1,4 +1,4 @@
-package com.halilben22.commentservice.model;
+package com.halilben22.replyservice.model;
 
 
 import lombok.Data;

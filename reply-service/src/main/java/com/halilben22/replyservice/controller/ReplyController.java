@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/replies")
 public class ReplyController {
@@ -34,6 +36,13 @@ public class ReplyController {
     public ResponseEntity<Void> deleteReply(@PathVariable Long replyId) {
         replyService.deleteReply(replyId);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @GetMapping("/getReplyByCommentId/{commentId}")
+    public ResponseEntity<List<Reply>> getReplyByCommentId(@PathVariable Long commentId) {
+        List<Reply> reply = replyService.findRepliesByCommentId(commentId);
+        return ResponseEntity.ok(reply);
     }
 
 

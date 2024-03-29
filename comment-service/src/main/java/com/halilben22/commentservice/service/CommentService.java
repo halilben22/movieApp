@@ -3,13 +3,17 @@ package com.halilben22.commentservice.service;
 
 import com.halilben22.commentservice.dto.CommentDto;
 import com.halilben22.commentservice.feign.FeignDetailRepository;
+import com.halilben22.commentservice.feign.FeignReplyRepository;
 import com.halilben22.commentservice.feign.FeignUserRepository;
 import com.halilben22.commentservice.model.Comment;
 import com.halilben22.commentservice.model.Detail;
+import com.halilben22.commentservice.model.Reply;
 import com.halilben22.commentservice.model.User;
 import com.halilben22.commentservice.repository.CommentRepository;
 import jakarta.ws.rs.NotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -19,10 +23,13 @@ public class CommentService {
     private final FeignUserRepository feignRepository;
     private final FeignDetailRepository feignDetailRepository;
 
-    public CommentService(CommentRepository commentRepository, FeignUserRepository feignRepository, FeignDetailRepository feignDetailRepository) {
+    private final FeignReplyRepository feignReplyRepository;
+
+    public CommentService(CommentRepository commentRepository, FeignUserRepository feignRepository, FeignDetailRepository feignDetailRepository, FeignReplyRepository feignReplyRepository) {
         this.commentRepository = commentRepository;
         this.feignRepository = feignRepository;
         this.feignDetailRepository = feignDetailRepository;
+        this.feignReplyRepository = feignReplyRepository;
     }
 
     public Comment createComment(CommentDto commentDto) {
@@ -62,6 +69,18 @@ public class CommentService {
     public List<Comment> findCommentByUserId(Long userId) {
 
         return commentRepository.findAllCommentByUserId(userId);
+
+    }
+
+    public Comment findById(Long commentId) {
+
+
+        return commentRepository.findById(commentId).get();
+    }
+
+    public List<Reply> getRepliesByCommentId(Long commentId) {
+
+        return feignReplyRepository.getReplyByCommentId(commentId).getBody();
 
     }
 }
